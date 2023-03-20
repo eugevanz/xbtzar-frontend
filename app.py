@@ -8,7 +8,6 @@ app = Dash(
     external_scripts=["https://tailwindcss.com/", {"src": "https://cdn.tailwindcss.com"}]
 )
 
-
 server = app.server
 
 
@@ -48,7 +47,7 @@ def figure(df, max_high=None, min_low=None, max_close=None, min_close=None, avg_
                 fig.add_vrect(
                     x0=df.index.values[i],
                     x1=df.index.values[i + 1],
-                    fillcolor='#1e293b' if df.prediction.values[i] else '#0f172a',
+                    fillcolor='#1e293b' if not df.prediction.values[i] else '#0f172a',
                     line_width=0,
                     opacity=1,
                     layer='below'
@@ -153,18 +152,18 @@ app.layout = html.Div(
                         src='https://drive.google.com/uc?export=view&id=1ZVaRMalXlrw1SLKNYkM0Rn5sf46C89L6',
                         alt="Rounded avatar"
                     ),
-                    html.Div('R 34567.01'),
+                    html.Div('ZAR 34567.01'),
                     html.Div('XBT 0.48'),
                     html.Div('ETH 12.04'),
                     html.Div(
                         children=[
                             html.Span('PROFIT ', className='text-[#d97706]'),
-                            html.Span('R 32345.99', className='font-extrabold')
+                            html.Span('32345.99', className='font-extrabold')
                         ]
                     )
 
                 ],
-                className='px-6 flex gap-x-4 italic w-full flex-row-reverse',
+                className='px-6 flex gap-x-4 italic w-full',
                 style={'fontSize': '11px'}
             ),
             html.Div(
@@ -175,7 +174,7 @@ app.layout = html.Div(
                                 children=[
                                     html.Div(
                                         f'{"BUY" if bool(handle_str_request("/late_signal/XBTZAR/")) else "SELL"}',
-                                        className='text-3xl font-extrabold text-right text-[#d97706]'
+                                        className='text-3xl font-extrabold text-[#d97706]'
                                     ),
                                     html.H1(
                                         'XBTZAR',
@@ -192,10 +191,19 @@ app.layout = html.Div(
                             html.Div(
                                 children=[
                                     html.Div(
+                                        dcc.Graph(
+                                            figure=figure(handle_dict_request('/candles/ETHZAR/')),
+                                            config={'displayModeBar': False},
+                                            style={'height': '120px'}
+                                        ),
+                                        className='max-w-xs hidden sm:block'
+                                    ),
+                                    html.Div(
                                         [
                                             html.H1(
                                                 'ETHZAR',
-                                                className='text-2xl font-extrabold leading-none tracking-tight mb-3',
+                                                className='text-2xl font-extrabold leading-none tracking-tight '
+                                                          'mb-0 sm:mb-3',
                                                 id='eth-pair'
                                             ),
                                             html.Div(
@@ -217,21 +225,13 @@ app.layout = html.Div(
                                                 ]
                                             )
                                         ],
-                                        className='flex flex-col'
-                                    ),
-                                    html.Div(
-                                        dcc.Graph(
-                                            figure=figure(handle_dict_request('/candles/ETHZAR/')),
-                                            config={'displayModeBar': False},
-                                            style={'height': '120px'}
-                                        ),
-                                        className='max-w-xs'
+                                        className='flex flex-row gap-4 items-center sm:gap-0 sm:flex-col'
                                     )
                                 ],
-                                className='p-3 border border-slate-800 rounded-lg flex flex-row gap-8'
+                                className='p-3 border border-slate-800 rounded-lg flex flex-row gap-8 w-fit'
                             )
                         ],
-                        className='flex md:flex-row flex-col justify-between pt-6 items-end'
+                        className='flex md:flex-row flex-col justify-between pt-6'
                     ),
                     html.Div(
                         dcc.Graph(
@@ -279,7 +279,7 @@ app.layout = html.Div(
                 ]
             )
         ],
-        className='p-6 body-font container mx-auto flex flex-col content-between'
+        className='p-3 body-font container mx-auto flex flex-col content-between'
     ),
     className='bg-slate-900 text-slate-400 text-sm h-full pb-24 font-mono'
 )
