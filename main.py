@@ -9,7 +9,7 @@ app = Dash(
 )
 
 
-# server = app.server
+server = app.server
 
 
 def figure(df, max_high=None, min_low=None, max_close=None, min_close=None, avg_close=None):
