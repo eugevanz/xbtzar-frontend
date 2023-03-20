@@ -6,6 +6,7 @@ dash-core-components
 dash-html-components
 dash-table
 Flask
+gunicorn
 idna
 importlib-metadata
 itsdangerous
