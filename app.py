@@ -47,7 +47,7 @@ def figure(df, max_high=None, min_low=None, max_close=None, min_close=None, avg_
                 fig.add_vrect(
                     x0=df.index.values[i],
                     x1=df.index.values[i + 1],
-                    fillcolor='#1e293b' if not df.prediction.values[i] else '#0f172a',
+                    fillcolor='#1e293b' if df.prediction.values[i] else '#0f172a',
                     line_width=0,
                     opacity=1,
                     layer='below'
@@ -132,10 +132,6 @@ def figure(df, max_high=None, min_low=None, max_close=None, min_close=None, avg_
 
 def handle_str_request(query):
     return get(query).text if 'http' in query else get(f'https://model-server-api.onrender.com{query}').text
-
-
-def handle_blob_request(query):
-    return get(query) if 'http' in query else get(f'https://model-server-api.onrender.com{query}')
 
 
 def handle_dict_request(query):
