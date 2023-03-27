@@ -169,7 +169,7 @@ app.layout = html.Div(
                             html.Div(
                                 children=[
                                     html.Div(
-                                        f'{"BUY" if bool(handle_str_request("/late_signal/XBTZAR/")) else "SELL"}',
+                                        f'{"BUY" if bool(handle_str_request("/derives/late_signal/xbtzar_deriv/")) else "SELL"}',
                                         className='text-3xl font-extrabold text-[#d97706]'
                                     ),
                                     html.H1(
@@ -188,7 +188,7 @@ app.layout = html.Div(
                                 children=[
                                     html.Div(
                                         dcc.Graph(
-                                            figure=figure(handle_dict_request('/candles/ETHZAR/')),
+                                            figure=figure(handle_dict_request('/candles/ethzar_df/')),
                                             config={'displayModeBar': False},
                                             style={'height': '120px'}
                                         ),
@@ -206,7 +206,7 @@ app.layout = html.Div(
                                                 children=[
                                                     html.P('Close', className='text-slate-600'),
                                                     html.P(
-                                                        f'R {handle_str_request("/late_close/ETHZAR/")}',
+                                                        f'R {handle_str_request("/derives/late_close/ethzar_deriv/")}',
                                                         className='text-[#0891b2]'
                                                     )
                                                 ]
@@ -215,7 +215,7 @@ app.layout = html.Div(
                                                 children=[
                                                     html.P('EMA12', className='text-slate-600'),
                                                     html.P(
-                                                        f'R {handle_str_request("/late_ema/ETHZAR/")}',
+                                                        f'R {handle_str_request("/derives/late_ema/ethzar_deriv/")}',
                                                         className='font-bold text-[#d97706]'
                                                     )
                                                 ]
@@ -232,12 +232,12 @@ app.layout = html.Div(
                     html.Div(
                         dcc.Graph(
                             figure=figure(
-                                df=handle_dict_request('/candles/XBTZAR/'),
-                                max_high=int(handle_str_request('/max_high/XBTZAR/')),
-                                min_low=int(handle_str_request('/min_low/XBTZAR/')),
-                                max_close=int(handle_str_request('/max_close/XBTZAR/')),
-                                min_close=int(handle_str_request('/min_close/XBTZAR/')),
-                                avg_close=float(handle_str_request('/avg_close/XBTZAR/'))
+                                df=handle_dict_request('/candles/xbtzar_df/'),
+                                max_high=int(handle_str_request('/derives/max_high/xbtzar_deriv/')),
+                                min_low=int(handle_str_request('/derives/min_low/xbtzar_deriv/')),
+                                max_close=int(handle_str_request('/derives/max_close/xbtzar_deriv/')),
+                                min_close=int(handle_str_request('/derives/min_close/xbtzar_deriv/')),
+                                avg_close=float(handle_str_request('/derives/avg_close/xbtzar_deriv/'))
                             ),
                             config={'displayModeBar': False},
                             style={'height': '70vh'}
@@ -255,7 +255,7 @@ app.layout = html.Div(
                                 children=[
                                     html.P('Close', className='text-slate-600'),
                                     html.P(
-                                        f'R {handle_str_request("/late_close/XBTZAR/")}',
+                                        f'R {handle_str_request("/derives/late_close/xbtzar_deriv/")}',
                                         className='text-[#0891b2]'
                                     )
                                 ]
@@ -264,7 +264,7 @@ app.layout = html.Div(
                                 children=[
                                     html.P('EMA12', className='text-slate-600'),
                                     html.P(
-                                        f'R {handle_str_request("/late_ema/XBTZAR/")}',
+                                        f'R {handle_str_request("/derives/late_ema/xbtzar_deriv/")}',
                                         className='font-bold text-[#d97706]'
                                     )
                                 ]
