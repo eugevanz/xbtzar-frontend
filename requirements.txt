@@ -1,4 +1,4 @@
-certifi==20
+certifi
 charset-normalizer
 click
 dash
