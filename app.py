@@ -1,8 +1,4 @@
-from os import getenv
 from dash import Dash, html, dcc
-from requests import get
-from sqlalchemy import create_engine, text
-import pandas as pd
 from fig_generator import figure
 from fetch_data import fetch
 
