@@ -7,7 +7,7 @@ def fetch(query):
     result = []
     try:
         # Create the SQLAlchemy engine
-        engine = create_engine(getenv('RENDER_SQL_INT'), echo=True, future=True)
+        engine = create_engine(getenv('RENDER_SQL_EXT'), echo=True, future=True)
         # Define the query to select data from the table
         with engine.connect() as connection:
             result = connection.execute(text(query))
