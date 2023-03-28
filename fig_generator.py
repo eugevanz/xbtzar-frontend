@@ -9,7 +9,7 @@ def figure(df, max_high=None, min_low=None, max_close=None, min_close=None, avg_
     df.high = df.high.astype(int)
     df.low = df.low.astype(int)
     df.close = df.close.astype(int)
-    df.EMA12 = df.EMA12.astype(int)
+    df.ema12 = df.ema12.astype(int)
 
     try:
         fig = go.Figure(
@@ -26,7 +26,7 @@ def figure(df, max_high=None, min_low=None, max_close=None, min_close=None, avg_
                     decreasing={'fillcolor': 'gray', 'line': {'color': 'gray'}}
                 ),
                 go.Scatter(
-                    x=df.index.values, y=df.EMA12, text='EMA12', line=dict(color='#d97706', width=4, shape='spline')
+                    x=df.index.values, y=df.ema12, text='ema12', line=dict(color='#d97706', width=4, shape='spline')
                 )
             ]
         )

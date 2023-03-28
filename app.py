@@ -1,10 +1,10 @@
 from os import getenv
-
 from dash import Dash, html, dcc
 from requests import get
 from sqlalchemy import create_engine, text
 import pandas as pd
 from fig_generator import figure
+from fetch_data import fetch
 
 app = Dash(
     __name__,
@@ -12,47 +12,6 @@ app = Dash(
 )
 
 server = app.server
-
-
-def handle_str_request(query):
-    return get(query).text if 'http' in query else get(f'https://model-server-api.onrender.com{query}').text
-
-
-def handle_dict_request(query):
-    return get(query).json() if 'http' in query else get(f'https://model-server-api.onrender.com{query}').json()
-
-
-def candles(tbl_name):
-    result = []
-    query = text('SELECT * FROM :tbl_name')
-    try:
-        # Create the SQLAlchemy engine
-        engine = create_engine(getenv('RENDER_SQL_EXT'), echo=True, future=True)
-        # Define the query to select data from the table
-        with engine.connect() as connection:
-            result = connection.execute(query, {'tbl_name': tbl_name})
-            result = pd.DataFrame(result.fetchall())
-    except Exception as error:
-        print(error)
-
-    return result.to_dict()
-
-
-def fetchones(col_name, tbl_name):
-    result = f'derives {col_name}, {tbl_name} FAILED'
-    query = text('SELECT :col_name FROM :tbl_name')
-    try:
-        # Create the SQLAlchemy engine
-        engine = create_engine(getenv('RENDER_SQL_EXT'), echo=True, future=True)
-        # Define the query to select data from the table
-        with engine.connect() as connection:
-            result = connection.execute(query, {'col_name': col_name, 'tbl_name': tbl_name})
-            result = result.fetchone()[0]
-    except Exception as error:
-        print(error)
-
-    return result
-
 
 app.layout = html.Div(
     html.Section(
@@ -64,9 +23,9 @@ app.layout = html.Div(
                         src='https://drive.google.com/uc?export=view&id=1ZVaRMalXlrw1SLKNYkM0Rn5sf46C89L6',
                         alt="Rounded avatar"
                     ),
-                    html.Div(fetchones('ZAR', 'accounts')),
-                    html.Div(fetchones('XBT', 'accounts')),
-                    html.Div(fetchones('ETH', 'accounts')),
+                    html.Div(f"R {fetch('select * from accounts').ZAR[0]}"),
+                    html.Div(f"B {fetch('select * from accounts').XBT[0]}"),
+                    html.Div(f"E {fetch('select * from accounts').ETH[0]}"),
                     html.Div(
                         children=[
                             html.Span('PROFIT ', className='text-[#d97706]'),
@@ -85,16 +44,17 @@ app.layout = html.Div(
                             html.Div(
                                 children=[
                                     html.Div(
-                                        'BUY' if bool(fetchones('late_signal', 'xbtzar_deriv')) else 'SELL',
+                                        'BUY' if bool(
+                                            fetch('select * from xbtzar_deriv').late_signal[0]
+                                        ) else 'SELL',
                                         className='text-3xl font-extrabold text-[#d97706]'
                                     ),
                                     html.H1(
-                                        'XBTZAR',
-                                        className='text-6xl font-extrabold leading-none tracking-tight',
-                                        id='xbt-pair'
+                                        'XBTZAR', className='text-6xl font-extrabold leading-none tracking-tight'
                                     ),
                                     html.P(
-                                        fetchones('description', 'accounts'), className='italic',
+                                        fetch('select * from accounts').description[0],
+                                        className='italic',
                                         style={'fontSize': '11px'}
                                     )
                                 ],
@@ -104,7 +64,7 @@ app.layout = html.Div(
                                 children=[
                                     html.Div(
                                         dcc.Graph(
-                                            figure=figure(candles('ethzar_df')),
+                                            figure=figure(fetch('select * from ethzar_df')),
                                             config={'displayModeBar': False},
                                             style={'height': '120px'}
                                         ),
@@ -115,14 +75,13 @@ app.layout = html.Div(
                                             html.H1(
                                                 'ETHZAR',
                                                 className='text-2xl font-extrabold leading-none tracking-tight '
-                                                          'mb-0 sm:mb-3',
-                                                id='eth-pair'
+                                                          'mb-0 sm:mb-3'
                                             ),
                                             html.Div(
                                                 children=[
                                                     html.P('Close', className='text-slate-600'),
                                                     html.P(
-                                                        f'R {fetchones("late_close", "ethzar_deriv")}',
+                                                        f'R {fetch("select * from ethzar_deriv").late_close[0]}',
                                                         className='text-[#0891b2]'
                                                     )
                                                 ]
@@ -131,7 +90,7 @@ app.layout = html.Div(
                                                 children=[
                                                     html.P('EMA12', className='text-slate-600'),
                                                     html.P(
-                                                        f'R {fetchones("late_ema", "ethzar_deriv")}',
+                                                        f'R {fetch("select * from ethzar_deriv").late_ema[0]}',
                                                         className='font-bold text-[#d97706]'
                                                     )
                                                 ]
@@ -148,12 +107,12 @@ app.layout = html.Div(
                     html.Div(
                         dcc.Graph(
                             figure=figure(
-                                df=candles('xbtzar_df'),
-                                max_high=int(fetchones('max_high', 'xbtzar_deriv')),
-                                min_low=int(fetchones('min_low', 'xbtzar_deriv')),
-                                max_close=int(fetchones('max_close', 'xbtzar_deriv')),
-                                min_close=int(fetchones('min_close', 'xbtzar_deriv')),
-                                avg_close=float(fetchones('avg_close', 'xbtzar_deriv'))
+                                df=fetch('select * from xbtzar_df'),
+                                max_high=int(fetch('select * from xbtzar_deriv').max_high[0]),
+                                min_low=int(fetch('select * from xbtzar_deriv').min_low[0]),
+                                max_close=int(fetch('select * from xbtzar_deriv').max_close[0]),
+                                min_close=int(fetch('select * from xbtzar_deriv').min_close[0]),
+                                avg_close=float(fetch('select * from xbtzar_deriv').avg_close[0])
                             ),
                             config={'displayModeBar': False},
                             style={'height': '70vh'}
@@ -171,7 +130,7 @@ app.layout = html.Div(
                                 children=[
                                     html.P('Close', className='text-slate-600'),
                                     html.P(
-                                        f'R {fetchones("late_close", "xbtzar_deriv")}',
+                                        f'R {fetch("select * from xbtzar_deriv").late_close[0]}',
                                         className='text-[#0891b2]'
                                     )
                                 ]
@@ -180,7 +139,7 @@ app.layout = html.Div(
                                 children=[
                                     html.P('EMA12', className='text-slate-600'),
                                     html.P(
-                                        f'R {fetchones("late_ema", "xbtzar_deriv")}',
+                                        f'R {fetch("select * from xbtzar_deriv").late_ema[0]}',
                                         className='font-bold text-[#d97706]'
                                     )
                                 ]
