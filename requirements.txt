@@ -39,7 +39,6 @@ typing_extensions
 urllib3
 websocket
 websocket-client
-websocket
 Werkzeug
 zipp
 zope.event
