@@ -1,17 +1,29 @@
 from dash import Dash, html, dcc
+from requests import get
 from fig_generator import figure
-from fetch_data import fetch
 
 app = Dash(
     __name__,
     external_scripts=["https://tailwindcss.com/", {"src": "https://cdn.tailwindcss.com"}]
 )
-
 server = app.server
+
+
+def luno(api):
+    try:
+        return get(
+            f'https://model-server-api.onrender.com{api}'
+        ).json() if 'candles' in api else get(
+            f'https://model-server-api.onrender.com{api}'
+        ).text
+    except Exception as error:
+        return error
+
 
 app.layout = html.Div(
     html.Section(
         children=[
+            dcc.Store(id='local', storage_type='session'),
             html.Div(
                 [
                     html.Img(
@@ -19,18 +31,17 @@ app.layout = html.Div(
                         src='https://drive.google.com/uc?export=view&id=1ZVaRMalXlrw1SLKNYkM0Rn5sf46C89L6',
                         alt="Rounded avatar"
                     ),
-                    html.Div(f"R {fetch('select * from accounts').ZAR[0]}"),
-                    html.Div(f"B {fetch('select * from accounts').XBT[0]}"),
-                    html.Div(f"E {fetch('select * from accounts').ETH[0]}"),
+                    html.Div(f"R {luno('/bal/zar/')}"),
+                    html.Div(f"B {luno('/bal/xbt/')}"),
+                    html.Div(f"E {luno('/bal/eth/')}"),
                     html.Div(
                         children=[
                             html.Span('PROFIT ', className='text-[#d97706]'),
                             html.Span('32345.99', className='font-extrabold')
                         ]
                     )
-
                 ],
-                className='px-6 flex gap-x-4 italic w-full',
+                className='px-6 flex gap-x-4 italic w-full mb-6',
                 style={'fontSize': '11px'}
             ),
             html.Div(
@@ -39,17 +50,11 @@ app.layout = html.Div(
                         children=[
                             html.Div(
                                 children=[
-                                    html.Div(
-                                        'BUY' if bool(
-                                            fetch('select * from xbtzar_deriv').late_signal[0]
-                                        ) else 'SELL',
-                                        className='text-3xl font-extrabold text-[#d97706]'
-                                    ),
                                     html.H1(
                                         'XBTZAR', className='text-6xl font-extrabold leading-none tracking-tight'
                                     ),
                                     html.P(
-                                        fetch('select * from accounts').description[0],
+                                        luno('/transaction/'),
                                         className='italic',
                                         style={'fontSize': '11px'}
                                     )
@@ -60,7 +65,7 @@ app.layout = html.Div(
                                 children=[
                                     html.Div(
                                         dcc.Graph(
-                                            figure=figure(fetch('select * from ethzar_df')),
+                                            figure=figure(luno('/candles/ETHZAR/')),
                                             config={'displayModeBar': False},
                                             style={'height': '120px'}
                                         ),
@@ -77,39 +82,24 @@ app.layout = html.Div(
                                                 children=[
                                                     html.P('Close', className='text-slate-600'),
                                                     html.P(
-                                                        f'R {fetch("select * from ethzar_deriv").late_close[0]}',
+                                                        f"R {luno('/derives/ETHZAR/late_close/')}",
                                                         className='text-[#0891b2]'
-                                                    )
-                                                ]
-                                            ),
-                                            html.Div(
-                                                children=[
-                                                    html.P('EMA12', className='text-slate-600'),
-                                                    html.P(
-                                                        f'R {fetch("select * from ethzar_deriv").late_ema[0]}',
-                                                        className='font-bold text-[#d97706]'
                                                     )
                                                 ]
                                             )
                                         ],
-                                        className='flex flex-row gap-4 items-center sm:gap-0 sm:flex-col'
+                                        className='flex flex-row gap-4 justify-items-start sm:gap-0 sm:flex-col'
                                     )
                                 ],
-                                className='p-3 border border-slate-800 rounded-lg flex flex-row gap-8 w-fit'
+                                className='p-3 border border-slate-800 rounded-lg items-center flex flex-row gap-8 '
+                                          'w-fit'
                             )
                         ],
                         className='flex md:flex-row flex-col justify-between pt-6'
                     ),
                     html.Div(
                         dcc.Graph(
-                            figure=figure(
-                                df=fetch('select * from xbtzar_df'),
-                                max_high=int(fetch('select * from xbtzar_deriv').max_high[0]),
-                                min_low=int(fetch('select * from xbtzar_deriv').min_low[0]),
-                                max_close=int(fetch('select * from xbtzar_deriv').max_close[0]),
-                                min_close=int(fetch('select * from xbtzar_deriv').min_close[0]),
-                                avg_close=float(fetch('select * from xbtzar_deriv').avg_close[0])
-                            ),
+                            figure=figure(luno('/candles/XBTZAR/')),
                             config={'displayModeBar': False},
                             style={'height': '70vh'}
                         ),
@@ -121,26 +111,15 @@ app.layout = html.Div(
                         style={'fontSize': '11px'}
                     ),
                     html.Div(
-                        children=[
-                            html.Div(
-                                children=[
-                                    html.P('Close', className='text-slate-600'),
-                                    html.P(
-                                        f'R {fetch("select * from xbtzar_deriv").late_close[0]}',
-                                        className='text-[#0891b2]'
-                                    )
-                                ]
-                            ),
-                            html.Div(
-                                children=[
-                                    html.P('EMA12', className='text-slate-600'),
-                                    html.P(
-                                        f'R {fetch("select * from xbtzar_deriv").late_ema[0]}',
-                                        className='font-bold text-[#d97706]'
-                                    )
-                                ]
-                            )
-                        ],
+                        html.Div(
+                            children=[
+                                html.P('Close', className='text-slate-600'),
+                                html.P(
+                                    f"R {luno('/derives/XBTZAR/late_close/')}",
+                                    className='text-[#0891b2]'
+                                )
+                            ]
+                        ),
                         className='p-6 flex gap-8'
                     )
                 ]
@@ -151,7 +130,27 @@ app.layout = html.Div(
     className='bg-slate-900 text-slate-400 text-sm h-full pb-24 font-mono'
 )
 
-if __name__ == '__main__':
-    app.run_server()
+# @app.callback(
+#     Output('local', 'data'), Output('xbt_price', 'children'),
+#     Input('interval-component', 'n_intervals'),
+#     State('local', 'data')
+# )
+# def update_store(n, data):
+#     ticker = get('https://api.luno.com/api/1/ticker?pair=XBTZAR').json()
+#     if data is not None:
+#         data[n] = dict(timestamp=ticker['timestamp'], last_trade=ticker['last_trade'])
+#     else:
+#         return {'0': dict(timestamp=ticker['timestamp'], last_trade=ticker['last_trade'])}
+#     return data, float(ticker['last_trade'])
+#
+#
+# @app.callback(Output('xbt_fig', 'figure'), Input('local', 'data'))
+# def call_from_store(data):
+#     if data is not None:
+#         return figure(data)
+#     else:
+#         return dash.no_update
 
-    # See PyCharm help at https://www.jetbrains.com/help/pycharm/
+
+if __name__ == '__main__':
+    app.run_server(threaded=True, debug=True)
