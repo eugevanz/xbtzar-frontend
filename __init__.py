@@ -1,5 +1,6 @@
 from dash import Dash, html, dcc
 from requests import get
+
 from fig_generator import figure
 
 app = Dash(
@@ -95,7 +96,7 @@ app.layout = html.Div(
                                           'w-fit'
                             )
                         ],
-                        className='flex md:flex-row flex-col justify-between pt-6'
+                        className='flex md:flex-row flex-col justify-between items-end pt-6'
                     ),
                     html.Div(
                         dcc.Graph(
@@ -130,27 +131,16 @@ app.layout = html.Div(
     className='bg-slate-900 text-slate-400 text-sm h-full pb-24 font-mono'
 )
 
-# @app.callback(
-#     Output('local', 'data'), Output('xbt_price', 'children'),
-#     Input('interval-component', 'n_intervals'),
-#     State('local', 'data')
-# )
-# def update_store(n, data):
-#     ticker = get('https://api.luno.com/api/1/ticker?pair=XBTZAR').json()
-#     if data is not None:
-#         data[n] = dict(timestamp=ticker['timestamp'], last_trade=ticker['last_trade'])
-#     else:
-#         return {'0': dict(timestamp=ticker['timestamp'], last_trade=ticker['last_trade'])}
-#     return data, float(ticker['last_trade'])
-#
-#
-# @app.callback(Output('xbt_fig', 'figure'), Input('local', 'data'))
-# def call_from_store(data):
-#     if data is not None:
-#         return figure(data)
-#     else:
-#         return dash.no_update
-
-
 if __name__ == '__main__':
+    # data = luno('/candles/XBTZAR/')
+    # Convert the dictionary to a NumPy array
+    # df = pd.DataFrame(data)
+
+    # call directional_change function
+    # tops, bottoms = directional_change(df['close'].values, df['high'].values, df['low'].values, sigma=0.03)
+
+    # print results
+    # print("Tops:", tops)
+    # print("Bottoms:", bottoms)
+
     app.run_server(threaded=True, debug=True)
