@@ -24,27 +24,34 @@ def luno(api):
 app.layout = html.Div(
     html.Section(
         children=[
-            dcc.Store(id='local', storage_type='session'),
-            html.Div(
-                [
-                    html.Img(
-                        className='w-10 h-10 rounded-full',
-                        src='https://drive.google.com/uc?export=view&id=1ZVaRMalXlrw1SLKNYkM0Rn5sf46C89L6',
-                        alt="Rounded avatar"
-                    ),
-                    html.Div(f"R {luno('/bal/zar/')}"),
-                    html.Div(f"B {luno('/bal/xbt/')}"),
-                    html.Div(f"E {luno('/bal/eth/')}"),
-                    html.Div(
-                        children=[
-                            html.Span('PROFIT ', className='text-[#d97706]'),
-                            html.Span('32345.99', className='font-extrabold')
-                        ]
-                    )
-                ],
-                className='px-6 flex gap-x-4 italic w-full mb-6',
-                style={'fontSize': '11px'}
-            ),
+            # html.Button(
+            #     children=[
+            #         html.Span('Open user menu', className='sr-only'),
+            #         html.Img(
+            #             className='w-10 h-10 rounded-full',
+            #             src='https://drive.google.com/uc?export=view&id=1ZVaRMalXlrw1SLKNYkM0Rn5sf46C89L6',
+            #             alt="User avatar"
+            #         )
+            #     ],
+            #     id='dropdownUserAvatarButton',
+            #     **{'data-dropdown-toggle': 'dropdownAvatar'},
+            #     className='flex mx-3 text-sm bg-gray-800 rounded-full md:mr-0 focus:ring-4 focus:ring-gray-300'
+            # ),
+            # html.Div(
+            #     [
+            #         html.Div(f"R {luno('/bal/zar/')}"),
+            #         html.Div(f"B {luno('/bal/xbt/')}"),
+            #         html.Div(f"E {luno('/bal/eth/')}"),
+            #         html.Div(
+            #             children=[
+            #                 html.Span('PROFIT ', className='text-[#d97706]'),
+            #                 html.Span('32345.99', className='font-extrabold')
+            #             ]
+            #         )
+            #     ],
+            #     id='dropdownAvatar',
+            #     className='z-10 hidden bg-white divide-y divide-gray-100 rounded-lg w-44'
+            # ),
             html.Div(
                 children=[
                     html.Div(

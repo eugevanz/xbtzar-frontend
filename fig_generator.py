@@ -25,12 +25,13 @@ def figure(data):
 
     # Add vertical rectangles to the figure based on the prediction series
     for i, prediction in enumerate(df['prediction']):
-        # Add a vrect to highlight this region
-        fig.add_vrect(
-            x0=df['Time'][i - 1], x1=df['Time'][i],
-            layer="below", fillcolor="#0f172a" if prediction else '#0891b2',
-            opacity=0.25, line_width=0
-        )
+        if i < len(df) - 1:
+            # Add a vrect to highlight this region
+            fig.add_vrect(
+                x0=df['Time'][i], x1=df['Time'][i + 1],
+                layer="below", fillcolor="#0f172a" if prediction else '#0891b2',
+                opacity=0.2, line_width=0
+            )
 
     fig.update_layout(
         showlegend=False,
